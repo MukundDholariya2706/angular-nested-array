@@ -1,0 +1,95 @@
+<div class="row">
+    <div class="col-md-12">
+        <form [formGroup]="questionForm">
+            <div class="row">
+                <div class="col-md-6 form-group">
+                    <h2>Please tell us about yourself<small class="p-error">*</small></h2>
+                    <div>
+                        <textarea class="form-control" cols="20" formControlName="aboutYourSelf"></textarea>
+                        <div *ngIf="f['aboutYourSelf'].touched && !f['aboutYourSelf'].valid" class="text-danger">
+                            <div *ngIf="f['aboutYourSelf'].errors?.['required']">
+                                Field is required
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br />
+
+            <div class="row">
+                <!-- <div formArrayName="question">
+
+                    <div *ngFor="let question of questions.controls; let i = index">
+                        <div [formGroupName]="i">
+                            <div *ngIf="question.value.queType === 'checkbox'; then checkboxPart else paraPart"></div>
+
+                            <ng-template #checkboxPart>
+                                <h2>Question {{ i + 1 }} - {{ question.value.question }}</h2>
+                                <div *ngFor="let answer of question.value.answerOption; let j = index">
+                                    <input type="checkbox" [value]="answer"/>{{ answer }}
+                                </div>
+                            </ng-template>
+
+                            <ng-template #paraPart>
+                                <h2>Question {{ i + 1 }} - {{ question.value.question }}</h2>
+                                <div class="col-md-5">
+                                    <input type="text" class="form-control"  />
+                                </div>
+                            </ng-template>
+                        </div>
+
+                        <div *ngIf="question.value.ownAnswer === true" class="col-md-5">
+                            <div class="form-group">Write your own answer</div>
+                            <input type="text" class="form-control"/>
+                        </div>
+                    </div>
+
+                    
+                </div> -->
+
+                <div formArrayName="question">
+                    <div *ngFor="let questionList of questions.controls; let i=index">
+                        <div [formGroupName]="i">
+                            {{ questionList.value | json }}
+                            <div *ngIf="questionList.value.queType === 'checkbox'; then checkboxPart else paraPart"></div>
+
+                            <ng-template #checkboxPart>
+                                <h2>Question {{ i + 1 }} - {{ questionList.value.question }}</h2>
+                                <div formArrayName="answerOption">
+                                    <div *ngFor="let answer of answerOptionsList(i).controls; let j = index">
+                                        <input type="checkbox" [value]="answer.value.name"> {{answer.value.name}}
+                                    </div>
+                                </div>
+                            </ng-template>
+
+                            <ng-template #paraPart>
+                                <h2>Question {{ i + 1 }} - {{ questionList.value.question }}</h2>
+                                <div class="col-md-5">
+                                    <input type="text" class="form-control"  />
+                                </div>
+                            </ng-template>
+
+                            <div *ngIf="questionList.value.ownAnswer === true" class="col-md-5">
+                                <div class="form-group">Write your own answer</div>
+                                <input type="text" class="form-control"/>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            &nbsp;
+            <div class="row">
+                <div class="col-md-3">
+                    <button type="button" (click)="openDialog()">Add New Question</button>
+                </div>
+                <div class="col-md-6">
+                    <button type="button" (click)="onReviewAns()">
+                        Review my answer >
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
