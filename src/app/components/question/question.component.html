@@ -1,3 +1,43 @@
-<p>
-  question works!
-</p>
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      <form [formGroup]="questionListForm">
+
+        <div class="row mt-3">
+          <div class="col-md-6 form-group">
+            <!-- text area question -->
+            <h2>
+              Please tell us about yourself<small class="p-error">*</small>
+            </h2>
+            <div>
+              <textarea class="form-control" cols="20" formControlName="aboutYourSelf"></textarea>
+              <div *ngIf="f['aboutYourSelf'].touched && !f['aboutYourSelf'].valid" class="text-danger">
+                <div *ngIf="f['aboutYourSelf'].errors?.['required']">
+                  Field is required
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- extra question -->
+        <div class="row mt-3">
+          <div class="col-md-12">
+            extra question
+          </div>
+        </div>
+
+
+        <div class="row mt-3">
+          <div class="col-md-3">
+            <button class="btn btn-primary" (click)="openDialog()">Add New Question</button>
+          </div>
+          <div class="col-md-3">
+            <button class="btn btn-primary" [disabled]="!questionListForm.valid" (click)="onReviewAns()">Review my
+              answe</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
