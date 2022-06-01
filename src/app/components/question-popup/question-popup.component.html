@@ -1,3 +1,69 @@
-<p>
-  question-popup works!
-</p>
+<label mat-dialog-title>Add a New Question</label>
+<div mat-dialog-content>
+  <form [formGroup]="questionPopupForm">
+
+    <!-- question type -->
+    <div class="row">
+      <div class="col-md-12">
+        <select class="custom-select form-control" formControlName="questionType" (change)="selectQue($event)">
+          <option value="" disabled selected>Choose question type</option>
+          <option *ngFor="let questionList of questionTypesList" [value]="questionList.value">{{questionList.label}}
+          </option>
+        </select>
+      </div>
+    </div>
+
+    &nbsp;
+
+    <!-- question -->
+    <div class="row">
+      <div class="col-md-12">
+        <label>Question</label>
+        <input type="text" class="form-control" formControlName="question" placeholder="Type question here">
+        <div *ngIf="g['question'].touched && !g['question'].valid" class="text-danger">
+          <div *ngIf="g['question'].errors?.['required']">requried</div>
+        </div>
+      </div>
+    </div>
+
+    &nbsp;
+
+    <!-- dynmic checkbox option field -->
+    <div *ngIf="g['questionType'].value === 'checkbox'">
+      <div formArrayName="answerOption">
+          <div class="form-group" *ngFor="let checkboxQue of checkBoxControls; let i = index">
+              <div class="form-group" [formGroupName]="i">
+              <label>Option {{i+1}}</label>
+                  <input type="text" class="form-control" [formControlName]="i" placeholder="Add Answer Option">
+
+                  <!-- <div *ngIf="checkboxValidation(i)['name'].touched && !checkboxValidation(i)['name'].valid" class="text-danger">
+                      <div *ngIf="checkboxValidation(i)['name'].errors?.['required']">required</div>
+                  </div> -->
+              </div>
+          </div>
+          <div *ngIf="showAddButton">
+              <label type="button" (click)="addQuestion()" >+ Add another answer</label>
+          </div>
+      </div>
+  </div>
+
+    <!-- own answer checkbox -->
+    <div class="form-group from-check">
+      <input type="checkbox" formControlName="ownAnswer" class="from-chcek-input">
+      <label for="ownAnswer">Allow user to specify their own answer</label>
+    </div>
+
+    <!-- field requried checkbox -->
+    <div class="form-group from-check">
+      <input type="checkbox" id="questionRequried" formControlName="questionRequried" class="from-chcek-input">
+      <label for="questionRequried">This field is required</label>
+    </div>
+
+  </form>
+</div>
+
+<div mat-dialog-actions>
+  <button mat-raised-button class="btn-primary" [mat-dialog-close]="questionPopupForm" (click)="questionsSubmit()">Submit</button>
+  <button mat-raised-button class="btn-primary" (click)="onCancel()">Cancel</button>
+
+</div>

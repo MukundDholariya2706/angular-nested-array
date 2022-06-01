@@ -1,6 +1,6 @@
 import { QuestionPopupComponent } from './../question-popup/question-popup.component';
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 
 @Component({
@@ -24,7 +24,9 @@ export class QuestionComponent implements OnInit {
 
   // form declear
   private initForm() {
-    this.questionListForm = this.fb.group({});
+    this.questionListForm = this.fb.group({
+      aboutYourSelf: ['', [Validators.required]],
+    });
   }
 
   //open Question pop-up
