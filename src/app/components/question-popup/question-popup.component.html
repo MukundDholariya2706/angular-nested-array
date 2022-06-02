@@ -34,12 +34,12 @@
           <div class="form-group" *ngFor="let checkboxQue of checkBoxControls; let i = index">
               <div class="form-group" [formGroupName]="i">
               <label>Option {{i+1}}</label>
-                  <input type="text" class="form-control" [formControlName]="i" placeholder="Add Answer Option">
-
-                  <!-- <div *ngIf="checkboxValidation(i)['name'].touched && !checkboxValidation(i)['name'].valid" class="text-danger">
+                  <input type="text" class="form-control" formControlName="name" placeholder="Add Answer Option">
+                  <div *ngIf="checkboxValidation(i)['name'].touched && !checkboxValidation(i)['name'].valid" class="text-danger">
                       <div *ngIf="checkboxValidation(i)['name'].errors?.['required']">required</div>
-                  </div> -->
+                  </div>
               </div>
+              &nbsp;
           </div>
           <div *ngIf="showAddButton">
               <label type="button" (click)="addQuestion()" >+ Add another answer</label>

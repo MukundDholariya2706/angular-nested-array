@@ -77,7 +77,12 @@ export class QuestionPopupComponent implements OnInit {
   //add questions
   addQuestion() {
     if(this.checkBoxControls.length < 5){
-      const controls = new FormControl('', Validators.required);
+
+      const controls = this.fb.group({
+        name: new FormControl('', Validators.required),
+        isChecked: new FormControl()
+      });
+      
       (<FormArray>this.questionPopupForm.get('answerOption')).push(controls);
 
     }
