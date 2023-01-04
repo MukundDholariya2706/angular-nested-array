@@ -2,6 +2,7 @@ import { QuestionPopupComponent } from './../question-popup/question-popup.compo
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormControl, FormArray, AbstractControl, ValidatorFn } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-question',
@@ -26,7 +27,10 @@ export class QuestionComponent implements OnInit {
     return (this.questionListArray.at(index) as FormGroup).controls;
   }
 
-  constructor(private fb: FormBuilder, public dialog: MatDialog) {}
+  constructor(
+    private fb: FormBuilder, 
+    public dialog: MatDialog,
+    private router: Router) {}
 
   ngOnInit() {
     this.initForm();
@@ -53,7 +57,6 @@ export class QuestionComponent implements OnInit {
 
       if (result) {
         this.result = {...result.data};
-        console.log('result :>> ', result);
         this.questionList.push(this.result);
         if(this.result.questionType == "paragraph") {
           this.queParagraph();
@@ -67,7 +70,7 @@ export class QuestionComponent implements OnInit {
 
   // submit button
   onReviewAns() {
-    console.log(this.questionListForm.value);
+    this.router.navigateByUrl('/form/answer', {state: { answer: this.questionListForm.value}})
   }
 
   queParagraph(){
@@ -82,9 +85,10 @@ export class QuestionComponent implements OnInit {
   queCheckbox(){
     let c = new FormGroup({
       question: new FormControl(this.result.question),
-      answer: new FormArray([], this.result.questionRequried ? Validators.required : null)
+      answer: new FormArray([], this.result.questionRequried ? Validators.required : null),
+      ownAnswer: new FormControl()
     });
-
+    
     (<FormArray>this.questionListForm.get('questionList')).push(c);
   }
 
@@ -101,6 +105,17 @@ export class QuestionComponent implements OnInit {
         }
         i++;
       });
+    }
+  }
+
+  updateValidation(event: any, index: number){
+    if(!this.questionList[index].questionRequried) return;
+    if(event.target.value != ''){
+      (this.questionGroup(index)['answer'] as FormArray).setValidators(null);
+      (this.questionGroup(index)['answer'] as FormArray).updateValueAndValidity();
+    } else {
+      (this.questionGroup(index)['answer'] as FormArray).setValidators(Validators.required);
+      (this.questionGroup(index)['answer'] as FormArray).updateValueAndValidity();
     }
   }
 }

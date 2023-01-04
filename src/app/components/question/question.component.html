@@ -58,6 +58,11 @@
                     <div *ngFor="let checkbox of questionList[i].answerOption; let j = index">
                       <input type="checkbox" [value]="checkbox.name" (change)="onCheckboxChange($event, i)"> {{checkbox.name}}
                     </div>
+                    
+                    <ng-container *ngIf="questionList[i].ownAnswer">
+                      <h3>Write your own answer</h3>
+                      <input type="text" class="form-control" formControlName="ownAnswer" (input)="updateValidation($event, i)">
+                    </ng-container>
                   </div>
                 </div>
               </ng-template>

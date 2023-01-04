@@ -72,8 +72,6 @@ export class QuestionPopupComponent implements OnInit {
 
   //form submit
   questionsSubmit(){
-    // console.log(this.questionPopupForm.value);
-    // console.log('this.data :>> ', this.data);
     this.dialogRef.close({data: this.questionPopupForm.getRawValue()});
 
   }

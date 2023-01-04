@@ -1,3 +1,28 @@
-<p>
-  answer works!
-</p>
+<div class="row text-center mt-3">
+  <h1>Answer</h1>
+</div>
+<div class="row">
+  <div>
+    <div class="h2">
+      Please tell us about yourself
+    </div>
+    <h3>{{data.aboutYourSelf}}</h3>
+  </div>
+  <div *ngFor="let d of data?.questionList; let i = index" class="mb-2">
+    <div class="fw-bold">
+      Que ({{i+1}}) {{d.question}}
+    </div>
+    <div>
+      <span class="fw-bold">Ans ({{i+1}})</span> {{typeOf(d.answer) == 'object' ? (d.answer.length > 0 ? d.answer : '-') : (!!d.answer ? d.answer : '-')}}
+    </div>
+    <div *ngIf="!!d?.ownAnswer">
+        <span class="fw-bold">Own Ans.</span>{{d?.ownAnswer}}
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="d-flex justify-content-center">
+    <button class="btn btn-success" [routerLink]="['../builder']" >Go Back</button>
+  </div>
+</div>
