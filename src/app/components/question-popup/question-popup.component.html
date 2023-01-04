@@ -1,6 +1,6 @@
 <label mat-dialog-title>Add a New Question</label>
-<div mat-dialog-content>
-  <form [formGroup]="questionPopupForm">
+<div mat-dialog-content >
+  <form [formGroup]="questionPopupForm" class="mt-1">
 
     <!-- question type -->
     <div class="row">
@@ -35,7 +35,7 @@
               <div class="form-group" [formGroupName]="i">
               <label>Option {{i+1}}</label>
                   <input type="text" class="form-control" formControlName="name" placeholder="Add Answer Option">
-                  <div *ngIf="checkboxValidation(i)['name'].touched && !checkboxValidation(i)['name'].valid" class="text-danger">
+                  <div *ngIf="checkboxValidation(i)['name'].touched && !checkboxValidation(i)['name'].errors?.['required']" class="text-danger">
                       <div *ngIf="checkboxValidation(i)['name'].errors?.['required']">required</div>
                   </div>
               </div>

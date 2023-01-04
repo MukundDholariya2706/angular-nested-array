@@ -61,7 +61,7 @@ export class QuestionPopupComponent implements OnInit {
       this.showAddButton = true;
       this.g['ownAnswer'].enable();
       this.questionPopupForm.addControl('answerOption', this.fb.array([]));
-
+      this.addQuestion();
     } else {
       this.questionPopupForm.patchValue({ ownAnswer: false });
       this.g['ownAnswer'].disable();

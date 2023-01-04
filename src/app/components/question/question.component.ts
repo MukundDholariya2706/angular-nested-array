@@ -1,6 +1,6 @@
 import { QuestionPopupComponent } from './../question-popup/question-popup.component';
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, FormControl, FormArray, AbstractControl } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, FormControl, FormArray, AbstractControl, ValidatorFn } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 
 @Component({
@@ -11,6 +11,7 @@ import { MatDialog } from '@angular/material/dialog';
 export class QuestionComponent implements OnInit {
   questionListForm!: FormGroup;
   result: any;
+  questionList: any[] = [];
 
   // get Form Controls
   get f() {
@@ -51,8 +52,9 @@ export class QuestionComponent implements OnInit {
       }
 
       if (result) {
-        this.result = result.data;
-        console.log('this.result :>> ', this.result);
+        this.result = {...result.data};
+        console.log('result :>> ', result);
+        this.questionList.push(this.result);
         if(this.result.questionType == "paragraph") {
           this.queParagraph();
         }
@@ -78,6 +80,27 @@ export class QuestionComponent implements OnInit {
   }
 
   queCheckbox(){
+    let c = new FormGroup({
+      question: new FormControl(this.result.question),
+      answer: new FormArray([], this.result.questionRequried ? Validators.required : null)
+    });
 
+    (<FormArray>this.questionListForm.get('questionList')).push(c);
+  }
+
+  onCheckboxChange(e: any, index: number) {
+    const checkArray: FormArray = this.questionGroup(index)['answer'] as FormArray;
+    if (e.target.checked) {
+      checkArray.push(new FormControl(e.target.value));
+    } else {
+      let i: number = 0;
+      checkArray.controls.forEach((item: AbstractControl) => {
+        if (item.value == e.target.value) {
+          checkArray.removeAt(i);
+          return;
+        }
+        i++;
+      });
+    }
   }
 }
