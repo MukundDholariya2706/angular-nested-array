@@ -10,7 +10,8 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 export class QuestionPopupComponent implements OnInit {
 
   questionPopupForm!: FormGroup;
-  showAddButton = false;
+  showAddButton: boolean = false;
+  formSubmitted: boolean = false;
 
   questionTypesList: Array<any> = [
     { label: 'Checkbox List V', value: 'checkbox' },
@@ -47,8 +48,8 @@ export class QuestionPopupComponent implements OnInit {
   // form declear
   private popUpForm(){
     this.questionPopupForm = this.fb.group({
-      questionType: [''],
-      question: [''],
+      questionType: ['', Validators.required],
+      question: ['', Validators.required],
       ownAnswer: [],
       questionRequried: [],
     })
@@ -72,6 +73,8 @@ export class QuestionPopupComponent implements OnInit {
 
   //form submit
   questionsSubmit(){
+    this.formSubmitted = true;
+    if(this.questionPopupForm.invalid) return;
     this.dialogRef.close({data: this.questionPopupForm.getRawValue()});
 
   }
@@ -79,6 +82,7 @@ export class QuestionPopupComponent implements OnInit {
   //add questions
   addQuestion() {
     if(this.checkBoxControls.length < 5){
+      this.formSubmitted = false;
       const controls = this.fb.group({
         name: new FormControl('', Validators.required),
         isChecked: new FormControl()
