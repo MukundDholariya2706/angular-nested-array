@@ -27,6 +27,55 @@
           </div>
         </div>
 
+        <div formArrayName="questionList">
+          <div *ngFor="let question of questionListArray.controls; let i = index">
+            <div [formGroupName]="i">
+              <ng-container *ngIf="result?.questionType == 'paragraph';then paraPart else checkboxPart" ></ng-container>
+              <ng-template #paraPart>
+                <div class="row mt-3">
+                  <div class="col-md-6 form-group">
+                    <h3>
+                      {{questionGroup(i)['question'].value}}<small *ngIf="questionGroup(i)['answer'].errors?.['required']" class="p-error">*</small>
+                    </h3>
+                    <div>
+                      <input class="form-control" formControlName="answer">
+                      <div *ngIf="questionGroup(i)['answer'].touched && !questionGroup(i)['answer'].valid" class="text-danger">
+                        <div *ngIf="questionGroup(i)['answer'].errors?.['required']">
+                          Answer is required
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </ng-template>
+              <ng-template #checkboxPart>
+
+              </ng-template>
+            </div>
+          </div>
+        </div>
+
+        <!-- <ng-container *ngIf="result?.questionType == 'paragraph'; else otherQuestion" >
+          <div class="row mt-3">
+            <div class="col-md-6 form-group">
+              <h2>
+                {{result.question}}<small *ngIf="f['paragraph'].errors?.['required']" class="p-error">*</small>
+              </h2>
+              <div>
+                <input class="form-control" formControlName="paragraph">
+                <div *ngIf="f['paragraph'].touched && !f['paragraph'].valid" class="text-danger">
+                  <div *ngIf="f['paragraph'].errors?.['required']">
+                    Field is required
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+
+        <ng-template #otherQuestion>
+
+        </ng-template> -->
 
         <div class="row mt-3">
           <div class="col-md-4">

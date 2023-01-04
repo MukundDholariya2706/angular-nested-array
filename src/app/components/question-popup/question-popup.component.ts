@@ -1,6 +1,6 @@
 import { FormGroup, FormBuilder, FormControl, FormArray, Validators } from '@angular/forms';
-import { Component, OnInit } from '@angular/core';
-import { MatDialogRef } from '@angular/material/dialog';
+import { Component, Inject, OnInit } from '@angular/core';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-question-popup',
@@ -37,6 +37,7 @@ export class QuestionPopupComponent implements OnInit {
 
   constructor(private fb: FormBuilder,
     public dialogRef: MatDialogRef<QuestionPopupComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: any
     ) { }
 
   ngOnInit(): void {
@@ -71,13 +72,15 @@ export class QuestionPopupComponent implements OnInit {
 
   //form submit
   questionsSubmit(){
-    console.log(this.questionPopupForm.value);
+    // console.log(this.questionPopupForm.value);
+    // console.log('this.data :>> ', this.data);
+    this.dialogRef.close({data: this.questionPopupForm.getRawValue()});
+
   }
 
   //add questions
   addQuestion() {
     if(this.checkBoxControls.length < 5){
-
       const controls = this.fb.group({
         name: new FormControl('', Validators.required),
         isChecked: new FormControl()

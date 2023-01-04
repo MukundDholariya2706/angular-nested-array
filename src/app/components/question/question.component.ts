@@ -1,6 +1,6 @@
 import { QuestionPopupComponent } from './../question-popup/question-popup.component';
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, FormControl, FormArray, AbstractControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 
 @Component({
@@ -10,10 +10,19 @@ import { MatDialog } from '@angular/material/dialog';
 })
 export class QuestionComponent implements OnInit {
   questionListForm!: FormGroup;
+  result: any;
 
   // get Form Controls
   get f() {
     return this.questionListForm.controls;
+  }
+
+  get questionListArray() {
+    return this.questionListForm.controls['questionList'] as FormArray;
+  }
+
+  questionGroup(index: number){
+    return (this.questionListArray.at(index) as FormGroup).controls;
   }
 
   constructor(private fb: FormBuilder, public dialog: MatDialog) {}
@@ -26,6 +35,7 @@ export class QuestionComponent implements OnInit {
   private initForm() {
     this.questionListForm = this.fb.group({
       aboutYourSelf: ['', [Validators.required]],
+      questionList: new FormArray([])
     });
   }
 
@@ -41,7 +51,14 @@ export class QuestionComponent implements OnInit {
       }
 
       if (result) {
-        console.log('result :>> ', result);
+        this.result = result.data;
+        console.log('this.result :>> ', this.result);
+        if(this.result.questionType == "paragraph") {
+          this.queParagraph();
+        }
+        else{
+          this.queCheckbox();
+        }
       }
     });
   }
@@ -49,5 +66,18 @@ export class QuestionComponent implements OnInit {
   // submit button
   onReviewAns() {
     console.log(this.questionListForm.value);
+  }
+
+  queParagraph(){
+    let c = new FormGroup({
+      question: new FormControl(this.result.question),
+      answer: new FormControl('', this.result.questionRequried ? Validators.required : null)
+    });
+
+    (<FormArray>this.questionListForm.get('questionList')).push(c);
+  }
+
+  queCheckbox(){
+
   }
 }

@@ -41,7 +41,7 @@
               </div>
               &nbsp;
           </div>
-          <div *ngIf="showAddButton">
+          <div *ngIf="showAddButton && checkBoxControls.length < 5">
               <label type="button" (click)="addQuestion()" >+ Add another answer</label>
           </div>
       </div>
@@ -63,7 +63,7 @@
 </div>
 
 <div mat-dialog-actions>
-  <button mat-raised-button class="btn-primary" [mat-dialog-close]="questionPopupForm" (click)="questionsSubmit()">Submit</button>
+  <button mat-raised-button class="btn-primary" (click)="questionsSubmit()">Submit</button>
   <button mat-raised-button class="btn-primary" (click)="onCancel()">Cancel</button>
 
 </div>
