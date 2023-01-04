@@ -51,11 +51,12 @@ export class QuestionComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe((result) => {
-      if (!result) {
+      if (!result?.data?.question) {
         //result is empty
+        return
       }
 
-      if (result) {
+      if (result?.data) {
         this.result = {...result.data};
         this.questionList.push(this.result);
         if(this.result.questionType == "paragraph") {
