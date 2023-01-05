@@ -1,8 +1,32 @@
 import { QuestionPopupComponent } from './../question-popup/question-popup.component';
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, FormControl, FormArray, AbstractControl, ValidatorFn } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  Validators,
+  FormControl,
+  FormArray,
+  AbstractControl,
+} from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
+
+export interface QuestionList {
+  questionType: string
+  question: string
+  ownAnswer?: boolean
+  questionRequried?: boolean
+  answerOption: AnswerOption[]
+}
+
+export interface ModelResult {
+  data: QuestionList
+}
+
+export interface AnswerOption {
+  name: string
+  isChecked: any
+}
 
 @Component({
   selector: 'app-question',
@@ -12,57 +36,58 @@ import { Router } from '@angular/router';
 export class QuestionComponent implements OnInit {
   questionListForm!: FormGroup;
   result: any;
-  questionList: any[] = [];
+  questionList: QuestionList[] = [];
 
   // get Form Controls
-  get f() {
+  get f(): { [key: string]: AbstractControl } {
     return this.questionListForm.controls;
   }
 
-  get questionListArray() {
+  get questionListArray(): FormArray {
     return this.questionListForm.controls['questionList'] as FormArray;
   }
 
-  questionGroup(index: number){
+  questionGroup(index: number): { [key: string]: AbstractControl } {
     return (this.questionListArray.at(index) as FormGroup).controls;
   }
 
   constructor(
-    private fb: FormBuilder, 
+    private fb: FormBuilder,
     public dialog: MatDialog,
-    private router: Router) {}
+    private router: Router
+  ) { }
 
   ngOnInit() {
     this.initForm();
   }
 
   // form declear
-  private initForm() {
+  private initForm(): void {
     this.questionListForm = this.fb.group({
       aboutYourSelf: ['', [Validators.required]],
-      questionList: new FormArray([])
+      questionList: new FormArray([]),
     });
   }
 
   //open Question pop-up
-  openDialog() {
+  openDialog(): void {
     const dialogRef = this.dialog.open(QuestionPopupComponent, {
       width: '500px',
     });
 
-    dialogRef.afterClosed().subscribe((result) => {
+    dialogRef.afterClosed().subscribe((result: ModelResult) => {
       if (!result?.data?.question) {
         //result is empty
-        return
+        return;
       }
 
       if (result?.data) {
-        this.result = {...result.data};
+        this.result = { ...result.data };
         this.questionList.push(this.result);
-        if(this.result.questionType == "paragraph") {
+        console.log('this.questionList :>> ', this.questionList);
+        if (this.result.questionType == 'paragraph') {
           this.queParagraph();
-        }
-        else{
+        } else {
           this.queCheckbox();
         }
       }
@@ -70,31 +95,41 @@ export class QuestionComponent implements OnInit {
   }
 
   // submit button
-  onReviewAns() {
-    this.router.navigateByUrl('/form/answer', {state: { answer: this.questionListForm.value}})
+  onReviewAns(): void {
+    this.router.navigateByUrl('/form/answer', {
+      state: { answer: this.questionListForm.value },
+    });
   }
 
-  queParagraph(){
+  queParagraph(): void {
     let c = new FormGroup({
       question: new FormControl(this.result.question),
-      answer: new FormControl('', this.result.questionRequried ? Validators.required : null)
+      answer: new FormControl(
+        '',
+        this.result.questionRequried ? Validators.required : null
+      ),
     });
 
     (<FormArray>this.questionListForm.get('questionList')).push(c);
   }
 
-  queCheckbox(){
+  queCheckbox(): void {
     let c = new FormGroup({
       question: new FormControl(this.result.question),
-      answer: new FormArray([], this.result.questionRequried ? Validators.required : null),
-      ownAnswer: new FormControl()
+      answer: new FormArray(
+        [],
+        this.result.questionRequried ? Validators.required : null
+      ),
+      ownAnswer: new FormControl(),
     });
-    
+
     (<FormArray>this.questionListForm.get('questionList')).push(c);
   }
 
-  onCheckboxChange(e: any, index: number) {
-    const checkArray: FormArray = this.questionGroup(index)['answer'] as FormArray;
+  onCheckboxChange(e: any, index: number): void {
+    const checkArray: FormArray = this.questionGroup(index)[
+      'answer'
+    ] as FormArray;
     if (e.target.checked) {
       checkArray.push(new FormControl(e.target.value));
     } else {
@@ -109,14 +144,20 @@ export class QuestionComponent implements OnInit {
     }
   }
 
-  updateValidation(event: any, index: number){
-    if(!this.questionList[index].questionRequried) return;
-    if(event.target.value != ''){
+  updateValidation(event: any, index: number): void {
+    if (!this.questionList[index].questionRequried) return;
+    if (event.target.value != '') {
       (this.questionGroup(index)['answer'] as FormArray).setValidators(null);
-      (this.questionGroup(index)['answer'] as FormArray).updateValueAndValidity();
+      (
+        this.questionGroup(index)['answer'] as FormArray
+      ).updateValueAndValidity();
     } else {
-      (this.questionGroup(index)['answer'] as FormArray).setValidators(Validators.required);
-      (this.questionGroup(index)['answer'] as FormArray).updateValueAndValidity();
+      (this.questionGroup(index)['answer'] as FormArray).setValidators(
+        Validators.required
+      );
+      (
+        this.questionGroup(index)['answer'] as FormArray
+      ).updateValueAndValidity();
     }
   }
 }
